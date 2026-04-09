@@ -1,0 +1,200 @@
+{
+  "localeInfo": {
+    "locale": "PAYATAS B",
+    "address": "168 Area A Phase 3, Lupakljklng Pangako, Payatas, Quezon City",
+    "contactPerson": "Bro. Vincent Esmundo",
+    "contactDetails": "0927-937-5827",
+    "googleMapLink": "https://maps.app.goo.gl/kZsF3sYdhfLjb7HTA"
+  },
+  "officers": [
+    {
+      "id": "1",
+      "name": "Bro. John Doe",
+      "position": "Locale Presdient"
+    },
+    {
+      "id": "2",
+      "name": "Sis. Jane Smith",
+      "position": "Secretary"
+    }
+  ],
+  "groups": [
+    {
+      "id": "group1",
+      "name": "Group 1",
+      "members": [
+        {
+          "name": "Member A"
+        },
+        {
+          "name": "Member B"
+        },
+        {
+          "name": "Member C"
+        }
+      ],
+      "toka": "Clean CR",
+      "combinedToka": "Stage Setup"
+    },
+    {
+      "id": "group2",
+      "name": "Group 2",
+      "members": [
+        {
+          "name": "Member D"
+        },
+        {
+          "name": "Member E"
+        }
+      ],
+      "toka": "Registration"
+    }
+  ],
+  "events": [
+    {
+      "id": "evt1",
+      "date": "2026-04-06",
+      "label": "APRIL 6, 2026 (MONDAY)",
+      "items": [
+        {
+          "time": "1PM",
+          "description": "MCGI CARES TLC"
+        },
+        {
+          "time": "7PM",
+          "description": "OPENING: MASS INDOCTRINATION"
+        },
+        {
+          "time": "8PM",
+          "description": "YOUTH OFFICERS MEETING"
+        }
+      ]
+    },
+    {
+      "id": "evt2",
+      "date": "2026-04-12",
+      "label": "APRIL 12, 2026 (SUNDAY)",
+      "items": [
+        {
+          "description": "WISHDATE"
+        }
+      ],
+      "wishDate": true
+    }
+  ],
+  "activities": [
+    {
+      "id": "act1",
+      "category": "Feeding Schedule",
+      "schedule": "Monday 7am"
+    },
+    {
+      "id": "act2",
+      "category": "Youth Cleaning",
+      "schedule": "MONDAY - SATURDAY"
+    },
+    {
+      "id": "act3",
+      "category": "Meeting Schedule",
+      "meetings": [
+        {
+          "date": "APRIL 8, 2026 (WEDNESDAY)",
+          "name": "GCOS MEETING",
+          "time": "8PM"
+        },
+        {
+          "date": "APRIL 10, 2026 (FRIDAY)",
+          "name": "TK MEETING",
+          "time": "8PM"
+        }
+      ]
+    }
+  ],
+  "ministries": [
+    {
+      "id": "m1",
+      "name": "Music Ministry",
+      "coordinators": [
+        {
+          "name": "Bro. Alex"
+        }
+      ]
+    },
+    {
+      "id": "m2",
+      "name": "KKTK",
+      "coordinators": [
+        {
+          "name": "Sis. Sarah"
+        }
+      ]
+    },
+    {
+      "id": "m3",
+      "name": "Mothers Club",
+      "coordinators": []
+    },
+    {
+      "id": "m4",
+      "name": "Workers",
+      "coordinators": []
+    },
+    {
+      "id": "m5",
+      "name": "GCOS",
+      "coordinators": []
+    },
+    {
+      "id": "m6",
+      "name": "Media/Broadcasting",
+      "coordinators": []
+    },
+    {
+      "id": "m7",
+      "name": "AddPro",
+      "coordinators": []
+    },
+    {
+      "id": "m8",
+      "name": "Security",
+      "coordinators": []
+    },
+    {
+      "id": "m9",
+      "name": "Social Media",
+      "coordinators": []
+    },
+    {
+      "id": "m10",
+      "name": "Kitchen",
+      "coordinators": []
+    },
+    {
+      "id": "m11",
+      "name": "Maintenance",
+      "coordinators": []
+    },
+    {
+      "id": "m12",
+      "name": "Translators",
+      "coordinators": []
+    }
+  ],
+  "mfaPosterUrl": "",
+  "mfaDriveLink": "",
+  "updates": [
+    {
+      "id": "u1",
+      "text": "IMPORTANT UPDATES!",
+      "highlight": true
+    },
+    {
+      "id": "u2",
+      "text": "Mass Indoctrination starts April 6 at 7PM"
+    },
+    {
+      "id": "u3",
+      "text": "Please bring your own tumblers to save plastic."
+    }
+  ]
+}

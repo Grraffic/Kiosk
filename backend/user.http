@@ -1,0 +1,43 @@
+### GET Server Health
+GET http://localhost:5000/
+Content-Type: application/json
+
+### GET All Content Data (Public)
+# This will fetch the content straight from your newly attached MongoDB!
+GET http://localhost:5000/api/content
+Content-Type: application/json
+
+### POST Admin Login (Required for updating content)
+# @name login
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "kiosk2026"
+}
+
+### PUT Update Content (Protected)
+# This will update the MongoDB database with the new payload.
+# If your VSCode REST Client doesn't auto-resolve variables, paste the token from the login response below.
+PUT http://localhost:5000/api/content
+Content-Type: application/json
+Authorization: Bearer {{login.response.body.token}}
+
+{
+  "localeInfo": {
+    "locale": "PAYATAS B (UPDATED VIA MONGODB)",
+    "address": "168 Area A Phase 3, Lupang Pangako, Payatas, Quezon City",
+    "contactPerson": "Bro. Vincent Esmundo",
+    "contactDetails": "0927-937-5827",
+    "googleMapLink": "https://maps.app.goo.gl/kZsF3sYdhfLjb7HTA"
+  },
+  "officers": [],
+  "groups": [],
+  "events": [],
+  "activities": [],
+  "ministries": [],
+  "updates": [],
+  "mfaPosterUrl": "https://example.com/poster.jpg",
+  "mfaDriveLink": "https://example.com/drive"
+}
