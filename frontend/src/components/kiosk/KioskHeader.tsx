@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaCross, FaHome, FaInfoCircle, FaUserTie, FaUsers, FaCalendarAlt, FaRunning, FaPrayingHands, FaQrcode } from 'react-icons/fa';
+import { FaHome, FaInfoCircle, FaUserTie, FaUsers, FaCalendarAlt, FaRunning, FaPrayingHands, FaQrcode } from 'react-icons/fa';
 
 export const NAV_ITEMS = [
   { label: 'Home',         icon: <FaHome className="inline-block mr-1.5" />, color: 'text-gray-300' },
