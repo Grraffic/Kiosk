@@ -51,7 +51,7 @@ export default function AdminDashboard() {
     setMessage('');
     try {
       if (activeTab === 'locale') await updateLocaleAPI(updatedData.localeInfo);
-      else if (activeTab === 'mfa-poster') await updateMfaAPI(updatedData.mfaPosterUrl, updatedData.mfaDriveLink);
+      else if (activeTab === 'mfa-poster') await updateMfaAPI(updatedData.mfaPosterUrl || '', updatedData.mfaDriveLink || '');
       else if (activeTab === 'updates') await updateUpdatesAPI(updatedData.updates || []);
       else if (activeTab === 'events') await updateEventsAPI(updatedData.events || []);
       else if (activeTab === 'officers') await updateOfficersAPI(updatedData.officers || []);
