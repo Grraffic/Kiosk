@@ -40,9 +40,7 @@ export default function KioskHeader({
           className={`flex items-center gap-3 ${onHome ? 'cursor-pointer select-none hover:opacity-80 transition-opacity' : ''}`}
           onClick={onHome}
         >
-          <div className="w-9 h-9 rounded-full bg-amber-500/20 border border-amber-500/50 flex items-center justify-center">
-            <FaCross className="text-amber-400 text-sm" />
-          </div>
+
           <div>
             <p className="text-[10px] text-gray-400 uppercase tracking-widest leading-none">MCGI</p>
             <h1 className="text-white font-bold text-sm leading-tight">
