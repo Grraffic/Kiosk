@@ -30,6 +30,7 @@ app.get('/', (_req, res) => {
 import authRoutes from './routes/auth';
 import contentRoutes from './routes/content';
 import { connectDB } from './config/db';
+import { autoSyncGroupsFromSheet } from './controllers/contentController';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/content', contentRoutes);
@@ -39,6 +40,9 @@ connectDB().then(() => {
   httpServer.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
   });
+  // Auto-sync groups from Google Sheet immediately, then every 30 minutes
+  autoSyncGroupsFromSheet();
+  setInterval(autoSyncGroupsFromSheet, 30 * 60 * 1000);
 });
 
 export default app;

@@ -33,6 +33,7 @@ export const updateOfficersAPI = async (officers: any[]) => api.put('/api/conten
 export const updateGroupsAPI = async (groups: any[]) => api.put('/api/content/groups', groups).then(r => r.data);
 export const updateActivitiesAPI = async (activities: any[]) => api.put('/api/content/activities', activities).then(r => r.data);
 export const updateMinistriesAPI = async (ministries: any[]) => api.put('/api/content/ministries', ministries).then(r => r.data);
+export const syncGroupsFromSheetAPI = async () => api.post('/api/content/sync-groups-sheet').then(r => r.data);
 
 export const login = async (username: string, password: string): Promise<string> => {
   const res = await api.post('/api/auth/login', { username, password });

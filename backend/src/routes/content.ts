@@ -2,7 +2,8 @@ import { Router } from 'express';
 import { 
   getContent, updateContent,
   updateLocale, updateMFA, updateUpdates, updateEvents,
-  updateOfficers, updateGroups, updateActivities, updateMinistries 
+  updateOfficers, updateGroups, updateActivities, updateMinistries,
+  syncGroupsFromSheet
 } from '../controllers/contentController';
 import { authenticateToken } from '../middleware/authMiddleware';
 
@@ -18,5 +19,6 @@ router.put('/officers', authenticateToken, updateOfficers);
 router.put('/groups', authenticateToken, updateGroups);
 router.put('/activities', authenticateToken, updateActivities);
 router.put('/ministries', authenticateToken, updateMinistries);
+router.post('/sync-groups-sheet', authenticateToken, syncGroupsFromSheet);
 
 export default router;

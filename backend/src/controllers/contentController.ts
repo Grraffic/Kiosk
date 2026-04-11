@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
+import https from 'https';
 import mongoose from 'mongoose';
 import { LocaleModel } from '../models/Locale';
 import { MFAModel } from '../models/MFA';
@@ -205,3 +206,99 @@ export const updateMinistries = async (req: Request, res: Response) => {
     catch (err) { res.status(500).json({ message: 'Failed to update ministries' }); }
 };
 
+// ─── Google Sheet Sync ──────────────────────────────────────────────────────
+
+const SHEET_ID = '1kqm91zg_dmyiZ7440rALe-rQxLqUFc4Sba0EC9b2a6w';
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+const fetchSheetText = (): Promise<string> =>
+    new Promise((resolve, reject) => {
+        https.get(SHEET_URL, (res) => {
+            let data = '';
+            res.on('data', (chunk: Buffer) => { data += chunk.toString(); });
+            res.on('end', () => resolve(data));
+        }).on('error', reject);
+    });
+
+const parseSheetToGroups = (raw: string): { id: string; name: string; members: { name: string }[] }[] => {
+    // Strip JSONP wrapper: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
+    const jsonStart = raw.indexOf('{');
+    const jsonEnd = raw.lastIndexOf('}');
+    if (jsonStart === -1 || jsonEnd === -1) throw new Error('Could not parse sheet response');
+    const json = JSON.parse(raw.slice(jsonStart, jsonEnd + 1));
+    const rows: any[] = json.table?.rows || [];
+
+    const groupsMap: Map<string, { name: string; members: { name: string }[] }> = new Map();
+
+    for (const row of rows) {
+        const cells = row.c || [];
+        const groupNum: string = cells[1]?.v || '';
+        const memberName: string = cells[2]?.v || '';
+        // Skip header rows (e.g. rows where groupNum === 'GROUP NUMBER')
+        if (!groupNum || groupNum === 'GROUP NUMBER' || !memberName) continue;
+
+        if (!groupsMap.has(groupNum)) {
+            groupsMap.set(groupNum, { name: groupNum, members: [] });
+        }
+        groupsMap.get(groupNum)!.members.push({ name: memberName });
+    }
+
+    return Array.from(groupsMap.values()).map((g) => ({
+        id: g.name.replace(/\s+/g, '_').toLowerCase(),
+        name: g.name,
+        members: g.members,
+    }));
+};
+
+export const syncGroupsFromSheet = async (req: Request, res: Response) => {
+    try {
+        const raw = await fetchSheetText();
+        const sheetGroups = parseSheetToGroups(raw);
+
+        // Preserve existing toka / combinedToka / picture for each group
+        const existingGroups = await GroupModel.find({});
+        const existingMap = new Map(existingGroups.map((g: any) => [g._id.toString(), g.toObject()]));
+
+        const merged = sheetGroups.map((g) => {
+            const existing = existingMap.get(g.id) || {};
+            return {
+                ...g,
+                picture: (existing as any).picture || '',
+                toka: (existing as any).toka || '',
+                combinedToka: (existing as any).combinedToka || '',
+            };
+        });
+
+        await syncArrayToModel(GroupModel, merged);
+        await broadcastUpdate();
+
+        res.json({ success: true, groupCount: merged.length });
+    } catch (err) {
+        console.error('Error syncing groups from Google Sheet:', err);
+        res.status(500).json({ message: 'Failed to sync groups from Google Sheet' });
+    }
+};
+
+/** Called from index.ts to auto-sync on a schedule */
+export const autoSyncGroupsFromSheet = async () => {
+    try {
+        const raw = await fetchSheetText();
+        const sheetGroups = parseSheetToGroups(raw);
+        const existingGroups = await GroupModel.find({});
+        const existingMap = new Map(existingGroups.map((g: any) => [g._id.toString(), g.toObject()]));
+        const merged = sheetGroups.map((g) => {
+            const existing = existingMap.get(g.id) || {};
+            return {
+                ...g,
+                picture: (existing as any).picture || '',
+                toka: (existing as any).toka || '',
+                combinedToka: (existing as any).combinedToka || '',
+            };
+        });
+        await syncArrayToModel(GroupModel, merged);
+        await broadcastUpdate();
+        console.log(`[AutoSync] Groups synced from Google Sheet at ${new Date().toISOString()} (${merged.length} groups)`);
+    } catch (err) {
+        console.error('[AutoSync] Failed to sync groups from Google Sheet:', err);
+    }
+};

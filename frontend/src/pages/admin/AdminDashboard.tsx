@@ -3,7 +3,8 @@ import Sidebar from '../../components/admin/Sidebar';
 import { 
   getKioskData, updateKioskData,
   updateLocaleAPI, updateMfaAPI, updateUpdatesAPI, updateEventsAPI,
-  updateOfficersAPI, updateGroupsAPI, updateActivitiesAPI, updateMinistriesAPI
+  updateOfficersAPI, updateGroupsAPI, updateActivitiesAPI, updateMinistriesAPI,
+  syncGroupsFromSheetAPI
 } from '../../services/api';
 import ImageUpload from '../../components/admin/ImageUpload';
 import type { KioskData } from '../../types';
@@ -14,6 +15,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
+  const [sheetSyncing, setSheetSyncing] = useState(false);
+  const [sheetSyncMsg, setSheetSyncMsg] = useState('');
 
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -67,6 +70,23 @@ export default function AdminDashboard() {
       setMessage('Failed to save settings Context');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSheetSync = async () => {
+    setSheetSyncing(true);
+    setSheetSyncMsg('');
+    try {
+      const result = await syncGroupsFromSheetAPI();
+      setSheetSyncMsg(`✅ Synced ${result.groupCount} groups from Google Sheet!`);
+      await fetchData(); // Refresh local data
+      setTimeout(() => setSheetSyncMsg(''), 5000);
+    } catch (err) {
+      console.error(err);
+      setSheetSyncMsg('❌ Failed to sync from Google Sheet');
+      setTimeout(() => setSheetSyncMsg(''), 5000);
+    } finally {
+      setSheetSyncing(false);
     }
   };
 
@@ -301,9 +321,38 @@ export default function AdminDashboard() {
                const paginated = filtered.slice((currentPage - 1) * 5, currentPage * 5);
                return (
               <div className="space-y-6">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex flex-wrap justify-between items-center mb-4 gap-3">
                   <h3 className="text-white font-bold">Groupings Configuration</h3>
-                  <button onClick={() => setData({...data, groups: [{ id: Date.now().toString(), name: 'New Group', members: [], toka: '', combinedToka: '' }, ...(data.groups || [])]})} className="bg-amber-500/20 text-amber-400 text-sm px-3 py-1 rounded">Add Group</button>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {sheetSyncMsg && (
+                      <span className={`text-xs px-2 py-1 rounded ${sheetSyncMsg.startsWith('✅') ? 'text-green-400 bg-green-500/10' : 'text-red-400 bg-red-500/10'}`}>
+                        {sheetSyncMsg}
+                      </span>
+                    )}
+                    <button
+                      onClick={handleSheetSync}
+                      disabled={sheetSyncing}
+                      className="flex items-center gap-2 bg-green-600/20 hover:bg-green-600/40 text-green-400 border border-green-500/30 text-sm px-3 py-1.5 rounded-lg transition-all disabled:opacity-60"
+                    >
+                      {sheetSyncing ? (
+                        <>
+                          <svg className="animate-spin h-3.5 w-3.5" viewBox="0 0 24 24" fill="none">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                          </svg>
+                          Syncing...
+                        </>
+                      ) : (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                          </svg>
+                          Sync from Google Sheet
+                        </>
+                      )}
+                    </button>
+                    <button onClick={() => setData({...data, groups: [{ id: Date.now().toString(), name: 'New Group', members: [], toka: '', combinedToka: '' }, ...(data.groups || [])]})} className="bg-amber-500/20 text-amber-400 text-sm px-3 py-1.5 rounded-lg">Add Group</button>
+                  </div>
                 </div>
                 {renderSearchBar()}
                 {paginated.map((group) => {
