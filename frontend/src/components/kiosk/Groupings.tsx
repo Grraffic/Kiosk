@@ -72,20 +72,22 @@ function GroupPanel({ group }: { group: Group }) {
           <FaUsers className="text-amber-400" />
           <h3 className="text-amber-400 font-semibold text-sm">Members</h3>
         </div>
-        {group.members.length === 0 ? (
-          <p className="text-gray-500 text-xs">No members listed.</p>
-        ) : (
-          <ul className="space-y-1.5">
-            {group.members.map((m, i) => (
-              <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
-                <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] flex items-center justify-center font-bold flex-shrink-0">
-                  {i + 1}
-                </span>
-                {m.name}
-              </li>
-            ))}
-          </ul>
-        )}
+        {(() => {
+          const regularMembers = group.members.filter(m => !m.position || m.position.toUpperCase() !== 'GROUP SERVANT');
+          if (regularMembers.length === 0) return <p className="text-gray-500 text-xs">No members listed.</p>;
+          return (
+            <ul className="space-y-1.5">
+              {regularMembers.map((m, i) => (
+                <li key={i} className="flex items-center gap-2 text-sm text-gray-300">
+                  <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-400 text-[10px] flex items-center justify-center font-bold flex-shrink-0">
+                    {i + 1}
+                  </span>
+                  {m.name}
+                </li>
+              ))}
+            </ul>
+          );
+        })()}
       </div>
 
       {/* Toka */}

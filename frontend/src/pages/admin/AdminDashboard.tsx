@@ -385,12 +385,15 @@ export default function AdminDashboard() {
                         <button onClick={() => { const arr = [...data.groups]; arr[globalIdx] = { ...group, members: [...(group.members || []), { name: '' }] }; setData({...data, groups: arr}); } } className="text-xs bg-amber-500/10 text-amber-500 px-2 py-1 rounded">Add Member</button>
                       </div>
                       <div className="grid grid-cols-2 gap-3">
-                        {(group.members || []).map((member, memIdx) => (
-                          <div key={memIdx} className="flex gap-2">
-                            <input type="text" placeholder="Member Name" value={member.name} onChange={(e) => { const arr = [...data.groups]; const mArr = [...(group.members || [])]; mArr[memIdx] = { ...member, name: e.target.value }; arr[globalIdx] = { ...group, members: mArr }; setData({...data, groups: arr}); }} className="flex-1 bg-navy-900 border-white/10 rounded-lg p-2 text-sm text-white outline-none focus:border-amber-500 min-w-0" />
-                            <button onClick={() => { const arr = [...data.groups]; arr[globalIdx] = { ...group, members: group.members?.filter((_, i) => i !== memIdx) }; setData({...data, groups: arr}); }} className="bg-red-500/20 text-red-500 px-3 rounded hover:bg-red-500/40 shrink-0">X</button>
-                          </div>
-                        ))}
+                        {(group.members || []).map((member, memIdx) => {
+                          if (member.position && member.position.toUpperCase() === 'GROUP SERVANT') return null;
+                          return (
+                            <div key={memIdx} className="flex gap-2">
+                              <input type="text" placeholder="Member Name" value={member.name} onChange={(e) => { const arr = [...data.groups]; const mArr = [...(group.members || [])]; mArr[memIdx] = { ...member, name: e.target.value }; arr[globalIdx] = { ...group, members: mArr }; setData({...data, groups: arr}); }} className="flex-1 bg-navy-900 border-white/10 rounded-lg p-2 text-sm text-white outline-none focus:border-amber-500 min-w-0" />
+                              <button onClick={() => { const arr = [...data.groups]; arr[globalIdx] = { ...group, members: group.members?.filter((_, i) => i !== memIdx) }; setData({...data, groups: arr}); }} className="bg-red-500/20 text-red-500 px-3 rounded hover:bg-red-500/40 shrink-0">X</button>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
