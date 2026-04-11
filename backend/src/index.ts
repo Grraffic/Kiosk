@@ -40,9 +40,11 @@ connectDB().then(() => {
   httpServer.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
   });
-  // Auto-sync groups from Google Sheet immediately, then every 30 minutes
-  autoSyncGroupsFromSheet();
-  setInterval(autoSyncGroupsFromSheet, 30 * 60 * 1000);
+  // Defer sheet sync so early requests (e.g. auth) are not competing with cold I/O
+  setImmediate(() => {
+    autoSyncGroupsFromSheet();
+    setInterval(autoSyncGroupsFromSheet, 30 * 60 * 1000);
+  });
 });
 
 export default app;

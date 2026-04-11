@@ -9,7 +9,11 @@ export const connectDB = async () => {
   }
 
   try {
-    await mongoose.connect(uri, { dbName: 'mcgi_kiosk' });
+    await mongoose.connect(uri, {
+      dbName: 'mcgi_kiosk',
+      serverSelectionTimeoutMS: 12_000,
+      connectTimeoutMS: 12_000,
+    });
     console.log('📦 MongoDB Atlas Connected Successfully');
   } catch (error) {
     console.error('❌ MongoDB Connection Error:', error);
