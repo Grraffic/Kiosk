@@ -220,7 +220,7 @@ const fetchSheetText = (): Promise<string> =>
         }).on('error', reject);
     });
 
-const parseSheetToGroups = (raw: string): { id: string; name: string; members: { name: string }[] }[] => {
+const parseSheetToGroups = (raw: string): { id: string; name: string; members: { name: string; position: string }[] }[] => {
     // Strip JSONP wrapper: /*O_o*/\ngoogle.visualization.Query.setResponse({...});
     const jsonStart = raw.indexOf('{');
     const jsonEnd = raw.lastIndexOf('}');
@@ -228,19 +228,20 @@ const parseSheetToGroups = (raw: string): { id: string; name: string; members: {
     const json = JSON.parse(raw.slice(jsonStart, jsonEnd + 1));
     const rows: any[] = json.table?.rows || [];
 
-    const groupsMap: Map<string, { name: string; members: { name: string }[] }> = new Map();
+    const groupsMap: Map<string, { name: string; members: { name: string; position: string }[] }> = new Map();
 
     for (const row of rows) {
         const cells = row.c || [];
         const groupNum: string = cells[1]?.v || '';
         const memberName: string = cells[2]?.v || '';
+        const memberPosition: string = cells[3]?.v || '';
         // Skip header rows (e.g. rows where groupNum === 'GROUP NUMBER')
         if (!groupNum || groupNum === 'GROUP NUMBER' || !memberName) continue;
 
         if (!groupsMap.has(groupNum)) {
             groupsMap.set(groupNum, { name: groupNum, members: [] });
         }
-        groupsMap.get(groupNum)!.members.push({ name: memberName });
+        groupsMap.get(groupNum)!.members.push({ name: memberName, position: memberPosition });
     }
 
     return Array.from(groupsMap.values()).map((g) => ({

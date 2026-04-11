@@ -7,7 +7,8 @@ const groupSchema = new mongoose.Schema({
   toka: { type: String, default: '' },
   combinedToka: { type: String, default: '' },
   members: [{
-     name: { type: String, default: '' }
+     name: { type: String, default: '' },
+     position: { type: String, default: '' }
   }]
 }, { versionKey: false });
 

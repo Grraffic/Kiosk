@@ -15,6 +15,7 @@ export interface Officer {
 
 export interface GroupMember {
   name: string;
+  position?: string;
 }
 
 export interface Group {
