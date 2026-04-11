@@ -1,10 +1,18 @@
 import axios from 'axios';
 import type { KioskData } from '../types';
+import { getApiBaseUrl } from '../config/apiBase';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
+  baseURL: getApiBaseUrl(),
   headers: { 'Content-Type': 'application/json' },
 });
+
+const AUTH_TIMEOUT_MS = 12_000;
+
+async function unwrap<T>(p: Promise<{ data: T }>): Promise<T> {
+  const res = await p;
+  return res.data;
+}
 
 // Attach JWT token to every request if present
 api.interceptors.request.use((config) => {
@@ -13,30 +21,33 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export const getKioskData = async (): Promise<KioskData> => {
-  const res = await api.get('/api/content');
-  return res.data;
-};
+export const getKioskData = (): Promise<KioskData> => unwrap(api.get<KioskData>('/api/content'));
 
 // Fallback legacy bulk update
-export const updateKioskData = async (data: Partial<KioskData>): Promise<KioskData> => {
-  const res = await api.put('/api/content', data);
-  return res.data;
-};
+export const updateKioskData = (data: Partial<KioskData>): Promise<KioskData> =>
+  unwrap(api.put<KioskData>('/api/content', data));
 
 // Specialized Granular Update Endpoints
-export const updateLocaleAPI = async (localeInfo: any) => api.put('/api/content/locale', { localeInfo }).then(r => r.data);
-export const updateMfaAPI = async (mfaPosterUrl: string, mfaDriveLink: string) => api.put('/api/content/mfa', { mfaPosterUrl, mfaDriveLink }).then(r => r.data);
-export const updateUpdatesAPI = async (updates: any[]) => api.put('/api/content/updates', updates).then(r => r.data);
-export const updateEventsAPI = async (events: any[]) => api.put('/api/content/events', events).then(r => r.data);
-export const updateOfficersAPI = async (officers: any[]) => api.put('/api/content/officers', officers).then(r => r.data);
-export const updateGroupsAPI = async (groups: any[]) => api.put('/api/content/groups', groups).then(r => r.data);
-export const updateActivitiesAPI = async (activities: any[]) => api.put('/api/content/activities', activities).then(r => r.data);
-export const updateMinistriesAPI = async (ministries: any[]) => api.put('/api/content/ministries', ministries).then(r => r.data);
-export const syncGroupsFromSheetAPI = async () => api.post('/api/content/sync-groups-sheet').then(r => r.data);
+export const updateLocaleAPI = (localeInfo: unknown) => unwrap(api.put('/api/content/locale', { localeInfo }));
+export const updateMfaAPI = (mfaPosterUrl: string, mfaDriveLink: string) =>
+  unwrap(api.put('/api/content/mfa', { mfaPosterUrl, mfaDriveLink }));
+export const updateUpdatesAPI = (updates: unknown[]) => unwrap(api.put('/api/content/updates', { updates }));
+export const updateEventsAPI = (events: unknown[]) => unwrap(api.put('/api/content/events', { events }));
+export const updateOfficersAPI = (officers: unknown[]) => unwrap(api.put('/api/content/officers', { officers }));
+export const updateGroupsAPI = (groups: unknown[]) => unwrap(api.put('/api/content/groups', { groups }));
+export const updateActivitiesAPI = (activities: unknown[]) =>
+  unwrap(api.put('/api/content/activities', { activities }));
+export const updateMinistriesAPI = (ministries: unknown[]) =>
+  unwrap(api.put('/api/content/ministries', { ministries }));
+export const syncGroupsFromSheetAPI = (): Promise<{ success: boolean; groupCount: number }> =>
+  unwrap(api.post('/api/content/sync-groups-sheet'));
 
 export const login = async (username: string, password: string): Promise<string> => {
-  const res = await api.post('/api/auth/login', { username, password });
+  const res = await api.post<{ token: string }>(
+    '/api/auth/login',
+    { username, password },
+    { timeout: AUTH_TIMEOUT_MS }
+  );
   return res.data.token;
 };
 

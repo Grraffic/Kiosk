@@ -11,6 +11,7 @@ import Activities from '../../components/kiosk/Activities';
 import Ministries from '../../components/kiosk/Ministries';
 import MFAPoster from '../../components/kiosk/MFAPoster';
 import ImportantUpdates from '../../components/kiosk/ImportantUpdates';
+import { getApiBaseUrl } from '../../config/apiBase';
 import { getKioskData } from '../../services/api';
 import type { KioskData } from '../../types';
 
@@ -64,8 +65,7 @@ export default function KioskPage() {
     fetchContent();
 
     // 2. Setup Socket.io connection using API base URL
-    const socketUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-    const socket = io(socketUrl);
+    const socket = io(getApiBaseUrl());
 
     socket.on('connect', () => console.log('Connected to WebSocket server for auto-updates'));
     

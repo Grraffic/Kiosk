@@ -34,7 +34,22 @@ body {
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: none;
+}
+
+/* ── Admin / forms (shared) ── */
+.admin-input {
+  @apply w-full bg-navy-950 border border-transparent rounded-xl px-3 py-2.5 text-sm text-white outline-none transition-colors focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/20;
+}
+.admin-label {
+  @apply block text-xs font-medium text-gray-400 mb-1.5 uppercase tracking-wide;
+}
+
+/* ── Subtle hero mesh (kiosk landing) ── */
+.kiosk-hero-mesh {
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -30%, rgba(245, 158, 11, 0.12), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 100% 50%, rgba(30, 58, 110, 0.35), transparent);
 }
 
 .glass-card-gold {
