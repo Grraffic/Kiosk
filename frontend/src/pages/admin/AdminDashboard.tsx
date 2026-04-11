@@ -369,23 +369,25 @@ export default function AdminDashboard() {
                        <button onClick={() => setData({...data, groups: data.groups.filter(g => g.id !== group.id)})} className="text-red-500 text-xs hover:underline">Remove Group</button>
                      </div>
                      <div className="grid grid-cols-2 gap-4">
-                       <div><label className="block text-xs text-gray-400 mb-1">Group Name</label><input type="text" value={group.name} onChange={(e) => { const arr = [...data.groups]; arr[globalIdx] = { ...group, name: e.target.value }; setData({...data, groups: arr}); }} className="w-full bg-navy-950 border-white/10 rounded-lg p-2 text-white outline-none focus:border-amber-500" /></div>
-                      <div><label className="block text-xs text-gray-400 mb-1">Individual Toka</label><input type="text" value={group.toka || ''} onChange={(e) => { const arr = [...data.groups]; arr[globalIdx] = { ...group, toka: e.target.value }; setData({...data, groups: arr}); }} className="w-full bg-navy-950 border-white/10 rounded-lg p-2 text-white outline-none focus:border-amber-500" /></div>
-                      <div className="col-span-2"><label className="block text-xs text-gray-400 mb-1">Combined/Tandem Toka</label><input type="text" value={group.combinedToka || ''} onChange={(e) => { const arr = [...data.groups]; arr[globalIdx] = { ...group, combinedToka: e.target.value }; setData({...data, groups: arr}); }} className="w-full bg-navy-950 border-white/10 rounded-lg p-2 text-white outline-none focus:border-amber-500" /></div>
-                    </div>
+                        <div>
+                           <label className="block text-xs text-amber-400 mb-1 font-semibold">Group Servant</label>
+                           <input type="text" readOnly title="Group Servant is synced from Google Sheet" value={(group.members || []).filter(m => m.position && m.position.toUpperCase() === 'GROUP SERVANT').map(m => m.name).join(', ') || 'N/A'} className="w-full bg-navy-950/50 border-amber-500/30 border rounded-lg p-2 text-amber-400/80 outline-none cursor-not-allowed text-sm" />
+                        </div>
+                        <div><label className="block text-xs text-gray-400 mb-1">Group Name</label><input type="text" value={group.name} onChange={(e) => { const arr = [...data.groups]; arr[globalIdx] = { ...group, name: e.target.value }; setData({...data, groups: arr}); }} className="w-full bg-navy-950 border-white/10 rounded-lg p-2 text-sm text-white outline-none focus:border-amber-500" /></div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 mt-4">
+                        <div><label className="block text-xs text-gray-400 mb-1">Individual Toka</label><input type="text" value={group.toka || ''} onChange={(e) => { const arr = [...data.groups]; arr[globalIdx] = { ...group, toka: e.target.value }; setData({...data, groups: arr}); }} className="w-full bg-navy-950 border-white/10 rounded-lg p-2 text-sm text-white outline-none focus:border-amber-500" /></div>
+                        <div><label className="block text-xs text-gray-400 mb-1">Combined/Tandem Toka</label><input type="text" value={group.combinedToka || ''} onChange={(e) => { const arr = [...data.groups]; arr[globalIdx] = { ...group, combinedToka: e.target.value }; setData({...data, groups: arr}); }} className="w-full bg-navy-950 border-white/10 rounded-lg p-2 text-sm text-white outline-none focus:border-amber-500" /></div>
+                      </div>
                     <div className="bg-navy-950/50 p-4 rounded-lg space-y-3">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-xs font-bold text-gray-400 uppercase">Members</span>
                         <button onClick={() => { const arr = [...data.groups]; arr[globalIdx] = { ...group, members: [...(group.members || []), { name: '' }] }; setData({...data, groups: arr}); } } className="text-xs bg-amber-500/10 text-amber-500 px-2 py-1 rounded">Add Member</button>
                       </div>
-                      <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+                      <div className="grid grid-cols-2 gap-3">
                         {(group.members || []).map((member, memIdx) => (
                           <div key={memIdx} className="flex gap-2">
                             <input type="text" placeholder="Member Name" value={member.name} onChange={(e) => { const arr = [...data.groups]; const mArr = [...(group.members || [])]; mArr[memIdx] = { ...member, name: e.target.value }; arr[globalIdx] = { ...group, members: mArr }; setData({...data, groups: arr}); }} className="flex-1 bg-navy-900 border-white/10 rounded-lg p-2 text-sm text-white outline-none focus:border-amber-500 min-w-0" />
-                            <select value={member.position || 'MEMBER'} onChange={(e) => { const arr = [...data.groups]; const mArr = [...(group.members || [])]; mArr[memIdx] = { ...member, position: e.target.value }; arr[globalIdx] = { ...group, members: mArr }; setData({...data, groups: arr}); }} className="bg-navy-900 border-white/10 rounded-lg p-2 text-xs text-white outline-none focus:border-amber-500 w-28 shrink-0">
-                               <option value="MEMBER">Member</option>
-                               <option value="GROUP SERVANT">Group Servant</option>
-                            </select>
                             <button onClick={() => { const arr = [...data.groups]; arr[globalIdx] = { ...group, members: group.members?.filter((_, i) => i !== memIdx) }; setData({...data, groups: arr}); }} className="bg-red-500/20 text-red-500 px-3 rounded hover:bg-red-500/40 shrink-0">X</button>
                           </div>
                         ))}

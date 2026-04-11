@@ -59,14 +59,9 @@ function GroupPanel({ group }: { group: Group }) {
           </div>
         )}
         <div>
-          <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Group Shepherd</p>
+          <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Group Servant: {servantNames || 'N/A'}</p>
           <div className="flex flex-col items-center justify-center gap-1">
             <p className="text-white font-bold text-lg">{group.name}</p>
-            {servantNames && (
-              <span className="text-amber-400 font-medium text-xs border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 rounded">
-                Servant: {servantNames}
-              </span>
-            )}
           </div>
         </div>
       </div>
